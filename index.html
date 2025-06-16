@@ -10,9 +10,7 @@
       height: 100%;
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #e0f7fa, #b2ebf2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       padding: 1rem;
     }
     .invite-card, .response-message {
@@ -21,24 +19,21 @@
       border-radius: 1rem;
       box-shadow: 0 4px 16px rgba(0,0,0,0.1);
       text-align: center;
-      max-width: 360px;
-      width: 100%;
-      transition: transform 0.3s ease, opacity 0.3s ease;
+      max-width: 360px; width: 100%;
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
-    .invite-card.hidden, .response-message.hidden {
-      opacity: 0; transform: scale(0.9); pointer-events: none;
-    }
-    .invite-card h1 {
-      font-size: 1.8rem; color: #00796b; margin-bottom: 0.5rem;
-    }
+    .hidden { opacity: 0; transform: scale(0.9); pointer-events: none; }
     .invite-card p {
-      font-size: 1.2rem; color: #004d40; margin-bottom: 1rem;
-    }
-    #nameInput {
-      width: calc(100% - 2rem);
-      padding: 0.5rem; margin-bottom: 1rem;
-      border: 2px solid #00796b; border-radius: 0.5rem;
       font-size: 1rem;
+      color: #004d40;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+    #timer {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #c62828;
+      margin-bottom: 1.5rem;
     }
     .buttons button {
       padding: 0.6rem 1.2rem;
@@ -54,7 +49,9 @@
     #noBtn { background: #c62828; color: #fff; }
     #noBtn:hover { background: #8e1f1f; }
     .response-message p {
-      font-size: 1.3rem; color: #004d40; margin-bottom: 1rem;
+      font-size: 1.3rem;
+      color: #004d40;
+      margin-bottom: 1rem;
     }
     .response-message .emoji {
       font-size: 3rem;
@@ -63,9 +60,9 @@
 </head>
 <body>
   <div class="invite-card" id="inviteCard">
-    <h1>¿Te gustaría ir al cine?</h1>
-    <p>Te invito este viernes <strong>20 de junio</strong></p>
-    <input id="nameInput" type="text" placeholder="Escribe tu nombre" />
+    <p>Señorita Elizaso, la presente pantalla tiene como finalidad invitarla a usted al cine el viernes.</p>
+    <p>Por favor, se le hace presente que la respuesta tiene un cronómetro:</p>
+    <div id="timer">01:30</div>
     <div class="buttons">
       <button id="yesBtn">¡Sí!</button>
       <button id="noBtn">Lo siento</button>
@@ -78,27 +75,44 @@
   </div>
 
   <script>
-    const inviteCard = document.getElementById('inviteCard');
-    const responseMessage = document.getElementById('responseMessage');
-    const nameInput = document.getElementById('nameInput');
-    const messageText = document.getElementById('messageText');
-    const messageEmoji = document.getElementById('messageEmoji');
+    // Cronómetro de 90 segundos
+    let totalSec = 90;
+    const timerEl = document.getElementById('timer');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn  = document.getElementById('noBtn');
 
-    document.getElementById('yesBtn').addEventListener('click', () => {
-      const name = nameInput.value.trim() || 'amigo/a';
-      showResponse(`¡Genial, ${name}! Nos vemos en el cine.`, '😊');
+    const interval = setInterval(() => {
+      const min = String(Math.floor(totalSec / 60)).padStart(2, '0');
+      const sec = String(totalSec % 60).padStart(2, '0');
+      timerEl.textContent = `${min}:${sec}`;
+      if (totalSec <= 0) {
+        clearInterval(interval);
+        yesBtn.disabled = true;
+        noBtn.disabled  = true;
+        timerEl.textContent = '00:00';
+      }
+      totalSec--;
+    }, 1000);
+
+    // Manejo de respuesta
+    const inviteCard     = document.getElementById('inviteCard');
+    const responseMsg    = document.getElementById('responseMessage');
+    const messageText    = document.getElementById('messageText');
+    const messageEmoji   = document.getElementById('messageEmoji');
+
+    yesBtn.addEventListener('click', () => {
+      showResponse('¡Genial, señorita Elizaso! Nos vemos en el cine.', '😊');
     });
-
-    document.getElementById('noBtn').addEventListener('click', () => {
-      const name = nameInput.value.trim() || 'amigo/a';
-      showResponse(`¡Entendido, ${name}! Otra vez será.`, '😉');
+    noBtn.addEventListener('click', () => {
+      showResponse('¡Entendido, señorita Elizaso! Otra vez será.', '😉');
     });
 
     function showResponse(text, emoji) {
+      clearInterval(interval);
       inviteCard.classList.add('hidden');
-      messageText.textContent = text;
+      messageText.textContent  = text;
       messageEmoji.textContent = emoji;
-      responseMessage.classList.remove('hidden');
+      responseMsg.classList.remove('hidden');
     }
   </script>
 </body>
