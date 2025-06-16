@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Invitación al Cine</title>
   <style>
-    /* Reset ligero */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html, body {
       height: 100%;
       font-family: Arial, sans-serif;
@@ -15,39 +13,93 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 1rem;
     }
-
-    .invite-card {
+    .invite-card, .response-message {
       background: #ffffffdd;
       padding: 2rem;
       border-radius: 1rem;
       box-shadow: 0 4px 16px rgba(0,0,0,0.1);
       text-align: center;
-      max-width: 320px;
+      max-width: 360px;
+      width: 100%;
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
-
+    .invite-card.hidden, .response-message.hidden {
+      opacity: 0; transform: scale(0.9); pointer-events: none;
+    }
     .invite-card h1 {
-      font-size: 1.8rem;
-      color: #00796b;
-      margin-bottom: 1rem;
+      font-size: 1.8rem; color: #00796b; margin-bottom: 0.5rem;
     }
-
     .invite-card p {
-      font-size: 1.2rem;
-      color: #004d40;
-      margin-bottom: 1.5rem;
+      font-size: 1.2rem; color: #004d40; margin-bottom: 1rem;
     }
-
-    .invite-card .emoji {
-      font-size: 2.5rem;
+    #nameInput {
+      width: calc(100% - 2rem);
+      padding: 0.5rem; margin-bottom: 1rem;
+      border: 2px solid #00796b; border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+    .buttons button {
+      padding: 0.6rem 1.2rem;
+      margin: 0 0.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #yesBtn { background: #00796b; color: #fff; }
+    #yesBtn:hover { background: #005a4f; }
+    #noBtn { background: #c62828; color: #fff; }
+    #noBtn:hover { background: #8e1f1f; }
+    .response-message p {
+      font-size: 1.3rem; color: #004d40; margin-bottom: 1rem;
+    }
+    .response-message .emoji {
+      font-size: 3rem;
     }
   </style>
 </head>
 <body>
-  <div class="invite-card">
+  <div class="invite-card" id="inviteCard">
     <h1>¿Te gustaría ir al cine?</h1>
     <p>Te invito este viernes <strong>20 de junio</strong></p>
-    <div class="emoji">🎬😊</div>
+    <input id="nameInput" type="text" placeholder="Escribe tu nombre" />
+    <div class="buttons">
+      <button id="yesBtn">¡Sí!</button>
+      <button id="noBtn">Lo siento</button>
+    </div>
   </div>
+
+  <div class="response-message hidden" id="responseMessage">
+    <p id="messageText"></p>
+    <div class="emoji" id="messageEmoji">🎬</div>
+  </div>
+
+  <script>
+    const inviteCard = document.getElementById('inviteCard');
+    const responseMessage = document.getElementById('responseMessage');
+    const nameInput = document.getElementById('nameInput');
+    const messageText = document.getElementById('messageText');
+    const messageEmoji = document.getElementById('messageEmoji');
+
+    document.getElementById('yesBtn').addEventListener('click', () => {
+      const name = nameInput.value.trim() || 'amigo/a';
+      showResponse(`¡Genial, ${name}! Nos vemos en el cine.`, '😊');
+    });
+
+    document.getElementById('noBtn').addEventListener('click', () => {
+      const name = nameInput.value.trim() || 'amigo/a';
+      showResponse(`¡Entendido, ${name}! Otra vez será.`, '😉');
+    });
+
+    function showResponse(text, emoji) {
+      inviteCard.classList.add('hidden');
+      messageText.textContent = text;
+      messageEmoji.textContent = emoji;
+      responseMessage.classList.remove('hidden');
+    }
+  </script>
 </body>
 </html>
